@@ -13,14 +13,14 @@ import {
   LegacyExam,
   ExamService,
   ExamStats,
-  Subject as ExamSubject,
+  ExamStatsRange,
+  FacultyWorkload,
 } from "../services/examService";
 import { Subject } from "../services/subjectService";
 
 // Dashboard component to display exam statistics
 const ExamsDashboard = ({
   stats,
-  upcomingExams,
   subjectDistribution,
 }: {
   stats: ExamStats;
@@ -32,18 +32,6 @@ const ExamsDashboard = ({
     color: string;
   }[];
 }) => {
-  // Define colors for subjects
-  const subjectColors = [
-    "bg-blue-200",
-    "bg-green-200",
-    "bg-yellow-200",
-    "bg-purple-200",
-    "bg-pink-200",
-    "bg-indigo-200",
-    "bg-red-200",
-    "bg-teal-200",
-  ];
-
   // Calculate total exams for percentage calculation
   const totalExamsCount = subjectDistribution.reduce(
     (sum, item) => sum + item.count,
@@ -170,7 +158,7 @@ const ExamsDashboard = ({
                   No subject data available.
                 </p>
               ) : (
-                subjectDistribution.map((item, index) => (
+                subjectDistribution.map((item) => (
                   <div key={item.code} className="mb-4">
                     <div className="flex items-center justify-between">
                       <div className="text-sm font-medium text-gray-600">
@@ -221,15 +209,15 @@ function Exams() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentExam, setCurrentExam] = useState<LegacyExam | null>(null);
-  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const [selectedSubject] = useState<string>("");
   const [statusChangeLoading, setStatusChangeLoading] = useState<number | null>(
     null
   );
 
   // Faculty workload state
   const [showFacultyWorkload, setShowFacultyWorkload] = useState(false);
-  const [facultyWorkload, setFacultyWorkload] = useState<FacultyWorkload[]>([]);
-  const [loadingFacultyData, setLoadingFacultyData] = useState(false);
+  const [facultyWorkload] = useState<FacultyWorkload[]>([]);
+  const [loadingFacultyData] = useState(false);
 
   // Date range states
   const [startDate, setStartDate] = useState<string>("2025-05-22");
@@ -391,22 +379,6 @@ function Exams() {
     }
   };
 
-  // Fetch faculty workload
-  const fetchFacultyWorkload = async () => {
-    setLoadingFacultyData(true);
-    setError(null);
-    try {
-      const data = await ExamService.getFacultyWorkload();
-      setFacultyWorkload(data);
-      setShowFacultyWorkload(true);
-    } catch (err) {
-      console.error("Failed to fetch faculty workload:", err);
-      setError("Failed to load faculty workload. Please try again later.");
-    } finally {
-      setLoadingFacultyData(false);
-    }
-  };
-
   // Handle start date change
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(e.target.value);
@@ -415,11 +387,6 @@ function Exams() {
   // Handle end date change
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(e.target.value);
-  };
-
-  // Handle subject selection change
-  const handleSubjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSubject(e.target.value);
   };
 
   // Handle input changes for form
@@ -760,120 +727,25 @@ function Exams() {
                             </tr>
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-200">
-                            {rangeStats.exams.map(
-                              (exam: {
-                                id: React.Key | null | undefined;
-                                subject: {
-                                  name:
-                                    | string
-                                    | number
-                                    | boolean
-                                    | React.ReactElement<
-                                        any,
-                                        | string
-                                        | React.JSXElementConstructor<any>
-                                      >
-                                    | Iterable<React.ReactNode>
-                                    | React.ReactPortal
-                                    | null
-                                    | undefined;
-                                  code:
-                                    | string
-                                    | number
-                                    | boolean
-                                    | React.ReactElement<
-                                        any,
-                                        | string
-                                        | React.JSXElementConstructor<any>
-                                      >
-                                    | Iterable<React.ReactNode>
-                                    | React.ReactPortal
-                                    | null
-                                    | undefined;
-                                };
-                                examDate:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | React.ReactElement<
-                                      any,
-                                      string | React.JSXElementConstructor<any>
-                                    >
-                                  | Iterable<React.ReactNode>
-                                  | React.ReactPortal
-                                  | null
-                                  | undefined;
-                                startTime:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | React.ReactElement<
-                                      any,
-                                      string | React.JSXElementConstructor<any>
-                                    >
-                                  | Iterable<React.ReactNode>
-                                  | React.ReactPortal
-                                  | null
-                                  | undefined;
-                                endTime:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | React.ReactElement<
-                                      any,
-                                      string | React.JSXElementConstructor<any>
-                                    >
-                                  | Iterable<React.ReactNode>
-                                  | React.ReactPortal
-                                  | null
-                                  | undefined;
-                                room: {
-                                  roomNumber:
-                                    | string
-                                    | number
-                                    | boolean
-                                    | React.ReactElement<
-                                        any,
-                                        | string
-                                        | React.JSXElementConstructor<any>
-                                      >
-                                    | Iterable<React.ReactNode>
-                                    | React.ReactPortal
-                                    | null
-                                    | undefined;
-                                };
-                                studentCount:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | React.ReactElement<
-                                      any,
-                                      string | React.JSXElementConstructor<any>
-                                    >
-                                  | Iterable<React.ReactNode>
-                                  | React.ReactPortal
-                                  | null
-                                  | undefined;
-                              }) => (
-                                <tr key={exam.id}>
-                                  <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {exam.subject.name} ({exam.subject.code})
-                                  </td>
-                                  <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                    {exam.examDate}
-                                  </td>
-                                  <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                    {exam.startTime} - {exam.endTime}
-                                  </td>
-                                  <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                    {exam.room.roomNumber}
-                                  </td>
-                                  <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                    {exam.studentCount}
-                                  </td>
-                                </tr>
-                              )
-                            )}
+                            {rangeStats.exams.map((exam) => (
+                              <tr key={exam.id || `exam-${Math.random()}`}>
+                                <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                  {exam.subject?.name} ({exam.subject?.code})
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                  {exam.examDate}
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                  {exam.startTime} - {exam.endTime}
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                  {exam.room?.roomNumber}
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                  {exam.studentCount}
+                                </td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </div>
@@ -954,6 +826,7 @@ function Exams() {
                           <select
                             value={exam.status}
                             onChange={(e) =>
+                              exam.id &&
                               handleStatusChange(exam.id, e.target.value)
                             }
                             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -1289,7 +1162,7 @@ function Exams() {
                           {faculty.name}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {faculty.workload} hours
+                          {faculty.examCount} hours
                         </span>
                       </li>
                     ))}

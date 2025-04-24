@@ -4,7 +4,6 @@ import {
   Download,
   Mail,
   Plus,
-  Clock,
   User,
   Users,
   Briefcase,
@@ -28,7 +27,7 @@ const LoadingPlaceholder = () => (
 );
 
 // Calendar component to display the exam schedule visually
-const ScheduleCalendar = ({ schedules }: { schedules: Schedule[] }) => {
+const ScheduleCalendar = ({}: { schedules: Schedule[] }) => {
   // Generate calendar days for current month
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();

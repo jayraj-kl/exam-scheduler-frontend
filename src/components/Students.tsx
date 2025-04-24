@@ -9,13 +9,7 @@ import {
   Award,
   BarChart2,
 } from "lucide-react";
-import {
-  Student,
-  StudentService,
-  StudentsByProgramStats,
-  StudentsBySemesterStats,
-  TotalStudentsStats,
-} from "../services/studentService";
+import { Student, StudentService } from "../services/studentService";
 
 // Dashboard component to display student statistics
 const StudentsDashboard = ({ students }: { students: Student[] }) => {

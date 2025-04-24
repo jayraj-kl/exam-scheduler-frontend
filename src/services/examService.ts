@@ -103,6 +103,7 @@ export interface FacultySlot {
 }
 
 export interface FacultyWorkload {
+  examCount: ReactNode;
   id: number;
   name: string;
   department: string;
@@ -131,6 +132,7 @@ export interface LegacyExam {
   description?: string;
 }
 
+import { ReactNode } from "react";
 // Exam API service
 import { apiRequest } from "./api";
 

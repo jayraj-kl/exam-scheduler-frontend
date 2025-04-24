@@ -1,21 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Home,
-  User,
-  Users,
-  ToggleLeft,
-  ToggleRight,
-} from "lucide-react";
-import {
-  Room,
-  RoomService,
-  TotalRoomsStats,
-  TotalCapacityStats,
-  AvailableRoomsStats,
-} from "../services/roomService";
+import { Plus, Pencil, Trash2, Home, User, Users } from "lucide-react";
+import { Room, RoomService } from "../services/roomService";
 
 // Dashboard component to display room statistics
 const RoomsDashboard = ({ rooms }: { rooms: Room[] }) => {
@@ -29,7 +14,7 @@ const RoomsDashboard = ({ rooms }: { rooms: Room[] }) => {
     totalCapacity: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   // Fetch statistics when component mounts
   useEffect(() => {
